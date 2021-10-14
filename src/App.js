@@ -1,23 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import { useIsAuthenticated, useMsal } from "@azure/msal-react"
 
-function App() {
+const App = () => {
+  const { instance, accounts, inProgress } = useMsal();
+  const isAuthenticated = useIsAuthenticated();
+
+  const handleLogin = () => {
+    console.log('instance ', instance)
+    console.log('isAuthenticated ', isAuthenticated)
+    console.log('accounts ', accounts)
+
+    instance.loginRedirect({
+      scopes: ["profile", "openid"],
+    })
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>MSAL React IDS Demo</h1>
+      <button onClick={handleLogin}>Login</button>
+
+      <p>Anyone can see this paragraph.</p>
+      {isAuthenticated && (
+        <p>At least one account is signed in!</p>
+      )}
+      {!isAuthenticated && (
+        <p>No users are signed in!</p>
+      )}
     </div>
   );
 }
